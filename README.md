@@ -1,15 +1,35 @@
-# Home-Decor Buyer Finder
+# Hearth & Home
 
-A small marketplace app for home decor sellers and buyers. Sellers can list items, buyers can search listings and request contact, and the backend stores requests and sends an email notification using SendGrid.
+Hearth & Home is a polished home-decor marketplace website that helps buyers discover meaningful pieces for their living spaces and gives sellers a simple way to list and share their finds. The experience pairs a warm editorial brand with practical marketplace functionality.
+
+## Overview
+
+This enhanced website includes:
+
+- A contemporary landing page with featured home collections and storytelling content
+- A browsing experience with search filters for keyword, category, and location/state
+- A seller submission flow for adding listings to the marketplace
+- A buyer contact request flow that records interest and triggers email outreach
+- A FastAPI backend with SQLite persistence for local development
 
 ## Features
 
-- Seller form to add a new home decor item
-- Item listing with search filters by keyword, category, and state
-- Buyer request form to request contact for an item
-- FastAPI backend with SQLite by default
-- React frontend with multiple pages and navigation
-- Email support via SendGrid
+- Elegant homepage with curated interior inspiration
+- Browse and filter inventory by keyword, category, and state
+- Seller onboarding form for adding new product listings
+- Buyer request form for contacting a seller about a specific item
+- Responsive navigation and refined visual styling
+- API-backed data flow between the React frontend and FastAPI backend
+- SendGrid integration for buyer confirmation emails and seller notifications
+
+## Tech Stack
+
+- Frontend: React, React Router, Axios
+- Styling: custom CSS with responsive layout patterns
+- Backend: FastAPI, SQLModel
+- Database: SQLite (default for local development)
+- Email: SendGrid
+- Runtime tooling: Node.js + npm, Python 3.10+
 
 ## Project Structure
 
@@ -18,67 +38,61 @@ buyer-finder/
 ├── backend/
 │   ├── main.py
 │   ├── models.py
+│   ├── buyer_finder.db
 │   └── __pycache__/
 ├── frontend/
+│   ├── public/
 │   ├── src/
 │   ├── package.json
 │   └── node_modules/
 ├── docker-compose.yml
 ├── README.md
-└── .gitignore
+├── .gitignore
+└── .venv/
 ```
-
-## Tech Stack
-
-- Frontend: React + React Router
-- Backend: FastAPI + SQLModel
-- Database: SQLite (default for local development)
-- Email: SendGrid
-- Container support: Docker Compose
 
 ## Prerequisites
 
-Before running the app, install:
+Before running the app locally, install:
 
-- Node.js and npm
+- Node.js 18+
+- npm
 - Python 3.10+
 - Optional: Docker and Docker Compose
 
 ## Backend Setup
 
-1. Go to the backend folder:
+1. Open a terminal in the project root and navigate to the backend folder:
 
 ```bash
 cd buyer-finder/backend
 ```
 
-2. Create a virtual environment (optional but recommended):
+2. Create and activate a virtual environment:
 
 ```bash
 python -m venv .venv
 ```
 
-3. Activate the environment:
-
-- Windows PowerShell:
+Windows PowerShell:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-- Windows Command Prompt:
+Windows Command Prompt:
 
 ```cmd
 .venv\Scripts\activate.bat
 ```
 
-4. Install Python dependencies:
+3. Install backend dependencies:
 
 ```bash
 pip install fastapi uvicorn sqlmodel python-dotenv httpx "pydantic[email]"
 ```
 
-5. Create a `.env` file in the backend folder with values like:
+4. Create a `.env` file in the backend directory:
 
 ```env
 DATABASE_URL=sqlite:///./buyer_finder.db
@@ -86,20 +100,20 @@ SENDGRID_API_KEY=your_sendgrid_api_key
 FROM_EMAIL=noreply@yourdomain.com
 ```
 
-6. Start the API:
+5. Start the API server:
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-The API will be available at:
+The API is available at:
 
 - http://localhost:8000
-- Swagger UI: http://localhost:8000/docs
+- API docs: http://localhost:8000/docs
 
 ## Frontend Setup
 
-1. Go to the frontend folder:
+1. Open a second terminal and move to the frontend project:
 
 ```bash
 cd buyer-finder/frontend
@@ -111,36 +125,34 @@ cd buyer-finder/frontend
 npm install
 ```
 
-3. Start the React app:
+3. Start the React development server:
 
 ```bash
 npm start
 ```
 
-The app will run at:
+The website will run at:
 
 - http://localhost:3000
 
-## Running with Docker
+## How the App Works
 
-From the project root:
-
-```bash
-docker-compose up --build
-```
-
-This will start the PostgreSQL database and API container. The frontend is typically run locally with `npm start`.
+1. Sellers use the “Sell with us” page to add a new product entry.
+2. The item is saved through the backend to the SQLite database.
+3. Buyers use the “Explore” page to browse listings and filter by keyword, category, or state.
+4. Interested buyers submit a request through the contact form.
+5. The backend records the request and sends a confirmation email via SendGrid.
 
 ## API Overview
 
-### Seller
+### Sellers
 
-- `POST /sellers` – create a seller
+- `POST /sellers` — create a seller profile
 
 ### Items
 
-- `POST /items` – create an item under a seller
-- `GET /items` – list items with optional filters:
+- `POST /items` — create a new item listing
+- `GET /items` — list items with optional filters:
   - `category`
   - `state`
   - `keyword`
@@ -148,14 +160,24 @@ This will start the PostgreSQL database and API container. The frontend is typic
 
 ### Buyer Requests
 
-- `POST /match` – log a buyer request and trigger email sending
+- `POST /match` — log a buyer interest request and enqueue the email process
+
+## Optional Docker Workflow
+
+From the project root:
+
+```bash
+docker-compose up --build
+```
+
+This is useful for a containerized local setup, while the frontend is commonly run locally with `npm start`.
 
 ## Notes
 
-- The app uses SQLite by default for local development.
-- If `SENDGRID_API_KEY` is missing, email sending will fail with a runtime error until it is configured.
-- The frontend proxies API calls to `http://localhost:8000` via the `proxy` field in `frontend/package.json`.
+- The frontend uses a proxy to `http://localhost:8000` in `frontend/package.json`.
+- If `SENDGRID_API_KEY` is missing, email sends will fail until the value is configured.
+- The default database is SQLite for easy local development and prototyping.
 
 ## License
 
-This project is for learning and local development purposes.
+This project is intended for learning, local development, and small-marketplace experimentation.
